@@ -3,6 +3,8 @@ import random
 
 lives = 10
 wrong_letters = []
+chosen_letters = []
+
 
 
 def random_word():
@@ -31,29 +33,42 @@ def random_word():
 
 chosen_word = random_word()
 
-def view_random_word(randomWord):
-    for index, letter in enumerate(randomWord):
-        if index < len(randomWord) - 1:
-            print("-", end=" ")
+welcome = lambda lives: print(f"Bienvenido al juego! Tendrás {lives} chances para adivinar la palabra oculta")
+
+def print_random_word(word, chosen_letters):
+    for letter in word:
+        if letter in chosen_letters:
+            print(letter, end=" ")
         else:
-            print("-", end="")
+            print("_", end=" ")
+    print()
 
 def user_selection():
     return input("Por favor, elija una letra: ").lower()
 
-def game(letter, word, chosen_letters, won_games, lives):
+
+def game(letter, word, won_games, lives, chosen_letters):
     result = ""
+
+    if letter not in word:   
+            wrong_letters.append(letter)
+            print("\n" + f"La letra elegida no está en la palabra oculta. Las siguientes son las letras incorrectas hasta el momento: {wrong_letters}")
+            lives -= 1
+            print(f"Vidas restantes: {lives}")
+
+    if lives == 0:
+            print(f"¡Perdiste! La palabra correcta era '{word}'.")
+            return word, won_games
     
     for item in word:
+        
         if item in chosen_letters:
             result += item
-            view_random_word(chosen_word)
+        
         else:
             result += '_'
-            lives -= 1
-            view_random_word(chosen_word)
-            # wrong_letters.append()
-            # print("\n" + f"La letra elegida no está en la palabra oculta. Las siguientes son las letras incorrectas hasta el momento: {}")
+            
+            
 
     
     print(result, sep = ' ')
@@ -65,7 +80,9 @@ def game(letter, word, chosen_letters, won_games, lives):
         return result, won_games
    
     user_guess = input("Si cree saber cuál es la palabra, escríbala a continuación o escriba 'no': ").lower()
-    print(result, sep = ' ')
+    # print(result, sep = ' ')
+    
+
     if user_guess == word:
         won_games += 1
         print("¡Adivinaste la palabra!", f"Partidas ganadas: {won_games}")
@@ -75,41 +92,44 @@ def game(letter, word, chosen_letters, won_games, lives):
     else:
         print("Entrada no válida. Continuará el juego.")
         return result, won_games
+
+
+
     
-welcome = lambda lives: print(f"Bienvenido al juego! Tendrás {lives} chances para adivinar la palabra oculta")
+    
+
 
 def play_game(lives):
+    won_games = 0
+    chosen_word = random_word()
     
     chosen_letters = []
-    won_games = 0
+    result = "-" * len(chosen_word)  # Inicializa result con guiones
+    
+    welcome(lives)
+    print_random_word(chosen_word, chosen_letters)
+    
+#   
     
     print(chosen_word)
 
-    welcome(lives)
-
-   
-
-    while lives >= 1:
-        view_random_word(chosen_word)
+#    
+#     view_random_word(chosen_word)
+    while lives >= 1 and result != chosen_word:
         print(f"\nVidas restantes: {lives}")
+        print(f"Letras elegidas hasta ahora: {chosen_letters}")
         letter = user_selection()
 
         if letter.isalpha():
             chosen_letters.append(letter)
-            result, won_games = game(letter, chosen_word, chosen_letters, won_games, lives)
+            result, won_games = game(letter, chosen_word, won_games, lives, chosen_letters)
 
-            if result == chosen_word:
-                print("¡Avivinaste la palabra!", f"Partidas ganadas: {won_games}")
-                break   
         else:
             print("Por favor, ingrese una letra válida.")
 
-        
-
-    print(f"Letras elegidas hasta ahora: {chosen_letters}")
-
     play_again = input("¿Quieres jugar de nuevo? (s/n): ").lower()
-    return play_again == 's'
+    return play_again == 's'    
+   
 
 # Juego principal
 while True:
@@ -117,4 +137,17 @@ while True:
         break
 
 print("¡Gracias por jugar! Hasta la próxima.")
+
+
+
+
+
+
+
+
+
+ 
+
+   
+
 
