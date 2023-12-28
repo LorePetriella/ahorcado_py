@@ -1,12 +1,6 @@
 import random
 
 
-lives = 10
-wrong_letters = []
-chosen_letters = []
-
-
-
 def random_word():
     words = [
         'amarillo', 'azul', 'blanco', 'gris', 'casa', 'cielo', 'claro', 'color', 'comida', 'correr',
@@ -66,7 +60,7 @@ def game(letter, word, won_games, lives, chosen_letters):
             result += item
         
         else:
-            result += '_'
+            result += '_ '
             
             
 
@@ -77,21 +71,23 @@ def game(letter, word, won_games, lives, chosen_letters):
     if result == word:
         won_games += 1
         print("¡Adivinaste la palabra!", f"Partidas ganadas: {won_games}")
-        return result, won_games
-   
+        return result, won_games, lives
+        
     user_guess = input("Si cree saber cuál es la palabra, escríbala a continuación o escriba 'no': ").lower()
-    # print(result, sep = ' ')
-    
 
+    
     if user_guess == word:
         won_games += 1
         print("¡Adivinaste la palabra!", f"Partidas ganadas: {won_games}")
-        return word, won_games
+        return word, won_games, lives
+   
     elif user_guess == 'no':
-        return result, won_games
+        return result, won_games, lives
     else:
-        print("Entrada no válida. Continuará el juego.")
-        return result, won_games
+        print("La palabra no es correcta. Continuará el juego.")
+        lives -= 1
+        return result, won_games, lives
+       
 
 
 
@@ -109,12 +105,11 @@ def play_game(lives):
     welcome(lives)
     print_random_word(chosen_word, chosen_letters)
     
-#   
+ 
     
-    print(chosen_word)
+    # print(chosen_word) Muestra la palabra oculta
 
-#    
-#     view_random_word(chosen_word)
+
     while lives >= 1 and result != chosen_word:
         print(f"\nVidas restantes: {lives}")
         print(f"Letras elegidas hasta ahora: {chosen_letters}")
@@ -122,7 +117,7 @@ def play_game(lives):
 
         if letter.isalpha():
             chosen_letters.append(letter)
-            result, won_games = game(letter, chosen_word, won_games, lives, chosen_letters)
+            result, won_games, lives = game(letter, chosen_word, won_games, lives, chosen_letters)
 
         else:
             print("Por favor, ingrese una letra válida.")
@@ -130,6 +125,9 @@ def play_game(lives):
     play_again = input("¿Quieres jugar de nuevo? (s/n): ").lower()
     return play_again == 's'    
    
+lives = 10
+wrong_letters = []
+chosen_letters = []
 
 # Juego principal
 while True:
